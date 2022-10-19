@@ -1,5 +1,5 @@
 ###
-Assembler for the nand2tetris assembly language (week 6's project).
+Assembler for the nand2tetris assembly language (week 6's project; see https://www.nand2tetris.org).
 ###
 Translates (with string processing) an assembly language text file into binary machine language:
 A- (related to memory/register addresses) and C-statements (related to what is computed in the ALU)

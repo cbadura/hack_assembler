@@ -1,0 +1,103 @@
+// unpacks each instruction in assembly language into its underlying fields
+
+// big loop: read indiv lines
+// handle white space and comments
+
+// counter is needed for instruction lines (must be part of struct entry or similar)
+
+#include "main.h"
+#include "string_mgmt.h"
+#include "dbg.h"
+
+#define MAX_SIZE 512
+
+int READLINE_READ_SIZE;
+char *STORAGE;
+
+void init_my_readline(int val);
+void str_cut(char *str, char cut);
+
+instr_arr *parse(int fd)
+{
+    instr_arr *instr;
+    char *line = NULL;
+
+    init_my_readline(10);
+
+    while ((line = my_readline(fd)) != NULL)
+    {
+        printf("%s\n", line);
+        free(line);
+    }
+
+    // debug("HERE");
+    return instr;
+}
+
+char *my_readline(int fd)
+{
+    // guard against wrong use
+    if (fd < 0) return NULL;
+
+    // set up strings
+    char *line = malloc(sizeof(char) * MAX_SIZE);
+    my_memset(line, '\0', MAX_SIZE - 1);
+
+    char tmp[MAX_SIZE];
+    tmp[0] = '\0';
+
+    char buff[READLINE_READ_SIZE + 1]; 
+    
+    if (STORAGE && STORAGE[0] == '\n')
+    {
+        // skip the newline, then copy storage to line first
+        STORAGE++;
+        my_strcat(line, STORAGE);
+        // flush storage
+        my_memset(STORAGE, '\0', my_strlen(STORAGE));
+    }
+
+    int read_bytes;
+    while ((read_bytes = read(fd, buff, READLINE_READ_SIZE)) > 0)
+    {
+        if (read_bytes == -1) return NULL;
+        
+        buff[read_bytes] = '\0';
+        // check if newline is present and copy everything from newline to storage for later use
+        if (my_strchr(buff, '\n') != NULL)
+        {
+            char *rest = my_strchr(buff, '\n');
+            STORAGE = my_strdup(rest);
+            my_strcat(tmp, buff);
+            break;
+        }
+        // put everything read into tmp string
+        my_strcat(tmp, buff);
+    }
+    // cut temp string before newline, then append to line
+    str_cut(tmp, '\n');
+    my_strcat(line, tmp);
+
+    if (my_strlen(line) == 0 && read_bytes == 0)
+        return NULL;
+    
+    return line;
+}
+
+void init_my_readline(int val)
+{
+    READLINE_READ_SIZE = val;
+}
+
+void str_cut(char *str, char cut)
+{
+    // cut newline and replace with terminating 0
+    for (size_t i = 0; str[i]; i++)
+    {
+        if (str[i] == cut)
+        {
+            str[i] = '\0';
+            return;
+        }
+    }
+}
