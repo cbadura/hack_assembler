@@ -6,6 +6,11 @@
 #include <fcntl.h>      // for open
 #include <sys/types.h>  // for chmod
 #include <sys/stat.h>   // for chmod
+#include "symtable.h"
+#include "string_mgmt.h"
+#include "dbg.h"
+
+#define MAX_SIZE 512
 
 typedef struct instr {
     char *address;
@@ -19,7 +24,9 @@ typedef struct instr_arr {
     instr *arr;
 } instr_arr;
 
-instr_arr *parse(int fd);
+t_lnode *parse_symbols(int fd, t_lnode *head);
+instr_arr *parse_instr(int fd, t_lnode *head);
 char *my_readline(int fd);
+char *get_label(char *line);
 
 #endif

@@ -1,5 +1,13 @@
 ###
 Assembler for the nand2tetris assembly language (week 6's project; see https://www.nand2tetris.org).
+Hack assembly language specification:
+Binary Hack program: A binary Hack program is a sequence of text lines, each consisting of sixteen 0 and 1 characters. If the line starts with a 0, it
+represents a binary A-instruction. Otherwise, it represents a binary C-instruction.
+Assembly Hack program: An assembly Hack program is a sequence of text lines, each being an assembly instruction, a label declaration, or a
+comment:
+- Assembly instruction: A symbolic A-instruction or a symbolic Cinstruction
+- Label declaration: A line of the form (xxx), where xxx is a symbol.
+- Comment: A line beginning with two slashes (//) is considered a comment and is ignored.
 ###
 Translates (with string processing) an assembly language text file into binary machine language:
 A- (related to memory/register addresses) and C-statements (related to what is computed in the ALU)
@@ -8,7 +16,7 @@ Symbols (variables and control flow labels) that the user creates are also trans
 The program assumes that symbols are already translated (to decimal numbers).
 Memory for all assigned variables is managed by the assembler as well.
 All white spaces and comments are ignored.
-
+###
 Translating A-instructions (where value is either non-negative decimal constant or symbol referring to one)
 op code of A-instr. is 0, so an instruction such as "@value" (=value in dec) in binary reads: "0valueinbinary"
 --> decimal to 15-bit binary conversion is needed
@@ -26,7 +34,7 @@ have no instruction line number.)
 
 Variable symbols: they are assigned a mem address starting at 16 (after 16 registers).
 
-All these are kept in a symbol table; predefined are the following:
+All these are kept in a symbol table (a linked list); predefined are the following:
 
 symbol  value
 R0      0

@@ -5,11 +5,14 @@
 
 // counter is needed for instruction lines (must be part of struct entry or similar)
 
-#include "main.h"
-#include "string_mgmt.h"
-#include "dbg.h"
+// 2) read input file
+// look for lines that start with opening bracket; while doing this count the lines containing instructions
+// first pass: add the label symbols to value table
+// second pass: set n to 16,
+// extract var symbols (all the symbols that don't appear in symbol table at this point are vars);
+// but if value is found, use it to complete instruction
 
-#define MAX_SIZE 512
+#include "main.h"
 
 int READLINE_READ_SIZE;
 char *STORAGE;
@@ -17,20 +20,37 @@ char *STORAGE;
 void init_my_readline(int val);
 void str_cut(char *str, char cut);
 
-instr_arr *parse(int fd)
+t_lnode *parse_symbols(int fd, t_lnode *head)
 {
-    instr_arr *instr;
     char *line = NULL;
+    char *label = NULL;
+    int line_count = 0;
 
     init_my_readline(10);
 
     while ((line = my_readline(fd)) != NULL)
     {
-        printf("%s\n", line);
+        printf("'%s'\n", line);
+        // if line begins with "(", store string within brackets in table, its value is line_count + 1
+        if (line[0] == '(')
+        {
+            label = get_label(line);
+            head = create_node(head, label, line_count + 1);
+        }
+        if (line[0] != '\n' && line[0] != '/' && line[1] != '/')
+            line_count++;
+        debug("count: %d", line_count);
         free(line);
     }
+    // print_list(head);
 
     // debug("HERE");
+    return head;
+}
+
+instr_arr *parse_instr(int fd, t_lnode *head)
+{
+    instr_arr *instr;
     return instr;
 }
 

@@ -1,12 +1,11 @@
-CFLAGS      += -Iinclude # -Wall -Wextra -Werror
-
-SRCS        = main.c parser.c code.c symtable.c string_mgmt.c
+SRCS        = main.c parser.c code.c symtable.c helpers.c string_mgmt.c
 
 OBJS        = ${SRCS: .c=.o}
 
-HEADER = include/main.h\
-	include/string_mgmt.h\
+# HEADER = include/main.h\
+# 	include/string_mgmt.h\
 
+CFLAGS      += -Iinclude # -Wall -Wextra -Werror
 CC = gcc
 RM = rm -rf
 
