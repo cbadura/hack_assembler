@@ -14,110 +14,90 @@
 
 #include "main.h"
 
-int READLINE_READ_SIZE;
-char *STORAGE;
-
-void init_my_readline(int val);
-void str_cut(char *str, char cut);
-
-t_lnode *parse_symbols(int fd, t_lnode *head)
+int get_line_len(char *buff, int i)
 {
-    char *line = NULL;
-    char *label = NULL;
-    int line_count = 0;
+    int line_len = 0;
 
-    init_my_readline(10);
-
-    while ((line = my_readline(fd)) != NULL)
+    while (buff[i] != '\n')
     {
-        printf("'%s'\n", line);
-        // if line begins with "(", store string within brackets in table, its value is line_count + 1
-        if (line[0] == '(')
-        {
-            label = get_label(line);
-            head = create_node(head, label, line_count + 1);
-        }
-        if (line[0] != '\n' && line[0] != '/' && line[1] != '/')
-            line_count++;
-        debug("count: %d", line_count);
-        free(line);
+        line_len++;
+        i++;
     }
-    // print_list(head);
-
-    // debug("HERE");
-    return head;
+    return line_len;
 }
 
-instr_arr *parse_instr(int fd, t_lnode *head)
+char *copy_line(char *buff, char *line, int i)
 {
-    instr_arr *instr;
-    return instr;
-}
+    int j = 0;
 
-char *my_readline(int fd)
-{
-    // guard against wrong use
-    if (fd < 0) return NULL;
-
-    // set up strings
-    char *line = malloc(sizeof(char) * MAX_SIZE);
-    my_memset(line, '\0', MAX_SIZE - 1);
-
-    char tmp[MAX_SIZE];
-    tmp[0] = '\0';
-
-    char buff[READLINE_READ_SIZE + 1]; 
-    
-    if (STORAGE && STORAGE[0] == '\n')
-    {
-        // skip the newline, then copy storage to line first
-        STORAGE++;
-        my_strcat(line, STORAGE);
-        // flush storage
-        my_memset(STORAGE, '\0', my_strlen(STORAGE));
-    }
-
-    int read_bytes;
-    while ((read_bytes = read(fd, buff, READLINE_READ_SIZE)) > 0)
-    {
-        if (read_bytes == -1) return NULL;
-        
-        buff[read_bytes] = '\0';
-        // check if newline is present and copy everything from newline to storage for later use
-        if (my_strchr(buff, '\n') != NULL)
-        {
-            char *rest = my_strchr(buff, '\n');
-            STORAGE = my_strdup(rest);
-            my_strcat(tmp, buff);
-            break;
-        }
-        // put everything read into tmp string
-        my_strcat(tmp, buff);
-    }
-    // cut temp string before newline, then append to line
-    str_cut(tmp, '\n');
-    my_strcat(line, tmp);
-
-    if (my_strlen(line) == 0 && read_bytes == 0)
+    if (buff[i] == '\n')
         return NULL;
-    
+
+    while (buff[i] != '\n' && buff[i] != ' ')
+    {
+        line[j] = buff[i];
+        j++;
+        i++; 
+    }
+    line[j] = '\0';
     return line;
 }
 
-void init_my_readline(int val)
+t_lnode *list_labels(char *buff, t_lnode *head, int *line_count)
 {
-    READLINE_READ_SIZE = val;
+    char *line = NULL;
+    char *label = NULL;
+    int line_len;
+    int i = 0;
+    int j;
+    int k;
+
+    while (buff[i])
+    {
+        // skip comment lines
+        if (buff[i] == '/')
+        {
+            while (buff[i] != '\n')
+                i++;
+            i++;
+            continue;
+        }
+        // get rid of empty lines (carriage return met here in provided file!!)
+        if (buff[i] == '\r')
+            i++;
+        
+        // compute len of current line, copy to string
+        line_len = get_line_len(buff, i);
+        line = malloc(line_len + 1);        
+        line = copy_line(buff, line, i);
+        
+        // debug("line: %s", line);
+        // if line begins with "(", the line count of the next line is stored with it
+        if (line != NULL && line[0] == '(')
+        {
+            label = get_label(line);
+            head = create_node_label(head, label, *line_count);
+        }
+        if (line != NULL && line[0] != '(')
+            (*line_count)++;
+        // debug("count: %d", *line_count);
+        free(line);
+        line = NULL;
+        // move forward to end of line, skip it
+        while (buff[i] != '\n')
+            i++;
+        i++;
+    }
+    // print_list(head);
+    return head;
 }
 
-void str_cut(char *str, char cut)
+instr_arr *parse_instr(char *buff, t_lnode *head, int line_count)
 {
-    // cut newline and replace with terminating 0
-    for (size_t i = 0; str[i]; i++)
-    {
-        if (str[i] == cut)
-        {
-            str[i] = '\0';
-            return;
-        }
-    }
+    instr_arr *instructions = malloc(sizeof(instr_arr));
+    // declare arr of instr inside instr_arr
+    instructions->arr = malloc(sizeof(int) * line_count);
+    instructions->size = line_count;
+    
+    return instructions;
 }

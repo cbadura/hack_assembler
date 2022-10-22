@@ -2,6 +2,7 @@
 #define SYMTABLE_H
 
 #include <stdlib.h>     // for malloc & NULL
+#include <stdbool.h>    // for bool type
 
 // predefined symbols (values are interpreted as addresses in RAM):
 // symbol     value
@@ -30,13 +31,16 @@
 #define THAT    4
 
 typedef struct s_lnode {
+    bool label;
     char *symbol;
     int value;
+    int line;
     struct s_lnode *next;
 } t_lnode;
 
 t_lnode *init_symtable(t_lnode *head);
-t_lnode *create_node(t_lnode *head, char *symbol, int val);
+t_lnode *create_node_value(t_lnode *head, char *symbol, int val);
+t_lnode *create_node_label(t_lnode *head, char *symbol, int line);
 void print_list(t_lnode *head);
 
 #endif

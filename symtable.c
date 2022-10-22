@@ -15,29 +15,29 @@ All these are kept in a symbol table (a linked list); predefined are the followi
 
 t_lnode *init_symtable(t_lnode *head)
 {
-    head = create_node(head, "R0", R0);
-    head = create_node(head, "R1", R1);
-    head = create_node(head, "R2", R2);
-    head = create_node(head, "R3", R3);
-    head = create_node(head, "R4", R4);
-    head = create_node(head, "R5", R5);
-    head = create_node(head, "R6", R6);
-    head = create_node(head, "R7", R7);
-    head = create_node(head, "R8", R8);
-    head = create_node(head, "R9", R9);
-    head = create_node(head, "R10", R10);
-    head = create_node(head, "R11", R11);
-    head = create_node(head, "R12", R12);
-    head = create_node(head, "R13", R13);
-    head = create_node(head, "R14", R14);
-    head = create_node(head, "R15", R15);
-    head = create_node(head, "SCREEN", SCREEN);
-    head = create_node(head, "KBD", KBD);
-    head = create_node(head, "SP", SP);
-    head = create_node(head, "LCL", LCL);
-    head = create_node(head, "ARG", ARG);
-    head = create_node(head, "THIS", THIS);
-    head = create_node(head, "THAT", THAT);
+    head = create_node_value(head, "R0", R0);
+    head = create_node_value(head, "R1", R1);
+    head = create_node_value(head, "R2", R2);
+    head = create_node_value(head, "R3", R3);
+    head = create_node_value(head, "R4", R4);
+    head = create_node_value(head, "R5", R5);
+    head = create_node_value(head, "R6", R6);
+    head = create_node_value(head, "R7", R7);
+    head = create_node_value(head, "R8", R8);
+    head = create_node_value(head, "R9", R9);
+    head = create_node_value(head, "R10", R10);
+    head = create_node_value(head, "R11", R11);
+    head = create_node_value(head, "R12", R12);
+    head = create_node_value(head, "R13", R13);
+    head = create_node_value(head, "R14", R14);
+    head = create_node_value(head, "R15", R15);
+    head = create_node_value(head, "SCREEN", SCREEN);
+    head = create_node_value(head, "KBD", KBD);
+    head = create_node_value(head, "SP", SP);
+    head = create_node_value(head, "LCL", LCL);
+    head = create_node_value(head, "ARG", ARG);
+    head = create_node_value(head, "THIS", THIS);
+    head = create_node_value(head, "THAT", THAT);
     return head;
 }
 

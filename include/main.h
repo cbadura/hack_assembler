@@ -10,7 +10,7 @@
 #include "string_mgmt.h"
 #include "dbg.h"
 
-#define MAX_SIZE 512
+#define MAX_SIZE 1024
 
 typedef struct instr {
     char *address;
@@ -24,9 +24,8 @@ typedef struct instr_arr {
     instr *arr;
 } instr_arr;
 
-t_lnode *parse_symbols(int fd, t_lnode *head);
-instr_arr *parse_instr(int fd, t_lnode *head);
-char *my_readline(int fd);
+t_lnode *list_labels(char *buff, t_lnode *head, int *line_count);
+instr_arr *parse_instr(char *buff, t_lnode *head, int line_count);
 char *get_label(char *line);
 
 #endif
