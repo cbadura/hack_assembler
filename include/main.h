@@ -13,6 +13,9 @@
 #define MAX_SIZE 1024
 
 typedef struct instr {
+    bool Ainstr;
+    bool Cinstr;
+    bool Linstr;
     char *address;
     char *dest;
     char *comp;
@@ -24,6 +27,7 @@ typedef struct instr_arr {
     instr *arr;
 } instr_arr;
 
+int get_filesize(char *file);
 t_lnode *list_labels(char *buff, t_lnode *head, int *line_count);
 instr_arr *parse_instr(char *buff, t_lnode *head, int line_count);
 char *get_label(char *line);

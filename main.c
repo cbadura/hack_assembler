@@ -8,24 +8,26 @@ int main(int ac, char **av)
         return -1;
     
     int fd;
+    int file_size; // for mallocing the buffer and reading the file
     int read_bytes = 0; // for reading the file
     char *buff = NULL; // contains content of whole file
     int line_count = 0; // stores lines of the file without comments and empty lines
 
     t_lnode *table = NULL; // symtable
-    instr_arr *instructions = NULL; // struct array to hold all separate lines/fields of instructions from assembly
+    instr_arr *instructions = NULL; 
     char *hackfile = NULL;
 
     // initialize symbolic table
     table = init_symtable(table);
 
+    // get filesize
+    file_size = get_filesize(av[1]);
     // get input file, copy into buffer
     fd = open(av[1], O_RDONLY);
     if (fd == -1)
         return -1;
-    // maybe recreate get_filesize_ft (or use syscall)
-    buff = malloc(sizeof(char) * MAX_SIZE);
-    while ((read_bytes = read(fd, buff, MAX_SIZE)) > 0)
+    buff = malloc(sizeof(char) * file_size);
+    while ((read_bytes = read(fd, buff, file_size)) > 0)
     {
         if (read_bytes == -1)
             return -1;
@@ -35,11 +37,25 @@ int main(int ac, char **av)
 
     // parse(1): first look for labels, pass to table
     table = list_labels(buff, table, &line_count);
-    print_list(table);
-    return 0;
+    // print_list(table);
 
-    // then parse(2): transfer all instructions and vars to symbolic table
+    // then parse(2): transfer all instructions to struct, vars to symbolic table
     instructions = parse_instr(buff, table, line_count);
+        debug("HERE");
+    
+    int instr_counter = 0;
+    debug("size: %d", instructions->size);
+    while (instr_counter < instructions->size)
+    {
+        if (instructions->arr[instr_counter].dest && instructions->arr[instr_counter].comp)
+            debug("dest: %s - comp: %s", instructions->arr[instr_counter].dest, instructions->arr[instr_counter].comp);
+        
+        if (instructions->arr[instr_counter].comp && instructions->arr[instr_counter].jmp)
+            debug("comp: %s - jmp: %s", instructions->arr[instr_counter].comp, instructions->arr[instr_counter].jmp);
+        instr_counter++;
+    }
+    
+    return 0;
 
     // convert to binary
 

@@ -1,6 +1,7 @@
 // manage the symbol table
 
 #include "symtable.h"
+#include "main.h"
 
 /* Translating label symbols, "(xxx)" (to label destinations of GOTO commands): replace with line number
 which is retrieved from a table.
@@ -39,6 +40,19 @@ t_lnode *init_symtable(t_lnode *head)
     head = create_node_value(head, "THIS", THIS);
     head = create_node_value(head, "THAT", THAT);
     return head;
+}
+
+bool contains_label(t_lnode *head, char *label)
+{
+    t_lnode *curr = head;
+    while (curr->next)
+    {
+        debug("curr->label: %s - label: %s", curr->symbol, label);
+        if (my_strcmp(curr->symbol, label) == 0)
+            return true;
+        curr = curr->next;
+    }
+    return false;
 }
 
 // 2) read input file for label symbols

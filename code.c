@@ -16,3 +16,7 @@
 {
 
 } */
+
+
+// check if table contains label
+// if (!contains_label(head, label))

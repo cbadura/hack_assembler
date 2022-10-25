@@ -32,6 +32,7 @@
 
 typedef struct s_lnode {
     bool label;
+    bool var;
     char *symbol;
     int value;
     int line;
@@ -39,8 +40,10 @@ typedef struct s_lnode {
 } t_lnode;
 
 t_lnode *init_symtable(t_lnode *head);
+bool contains_label(t_lnode *head, char *label);
 t_lnode *create_node_value(t_lnode *head, char *symbol, int val);
 t_lnode *create_node_label(t_lnode *head, char *symbol, int line);
+t_lnode *create_node_var(t_lnode *head, char *symbol);
 void print_list(t_lnode *head);
 
 #endif
