@@ -31,5 +31,8 @@ int get_filesize(char *file);
 t_lnode *list_labels(char *buff, t_lnode *head, int *line_count);
 instr_arr *parse_instr(char *buff, t_lnode *head, int line_count);
 char *get_label(char *line);
+int get_line_len(char *buff, int i);
+char *copy_line(char *buff, char *line, int i);
+char *generate_bin(instr_arr *instructions, t_lnode *head);
 
 #endif

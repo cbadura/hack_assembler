@@ -22,6 +22,35 @@ int get_filesize(char *file)
     return file_size;
 }
 
+int get_line_len(char *buff, int i)
+{
+    int line_len = 0;
+
+    while (buff[i] != '\n')
+    {
+        line_len++;
+        i++;
+    }
+    return line_len;
+}
+
+char *copy_line(char *buff, char *line, int i)
+{
+    int j = 0;
+
+    if (buff[i] == '\n')
+        return NULL;
+
+    while (buff[i] != '\n' && buff[i] != ' ')
+    {
+        line[j] = buff[i];
+        j++;
+        i++; 
+    }
+    line[j] = '\0';
+    return line;
+}
+
 t_lnode *create_node_value(t_lnode *head, char *symbol, int val)
 {
     t_lnode *new = malloc(sizeof(t_lnode));

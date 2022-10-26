@@ -12,10 +12,11 @@
 
 // if curr->label == false, it's a var (either predefined or user var)
 
-/* void generate_bin(instr_arr *instructions, int fd)
-{
 
-} */
+void generate_bin(instr_arr *instructions, int fd)
+{
+    
+}
 
 
 // check if table contains label

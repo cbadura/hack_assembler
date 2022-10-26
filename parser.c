@@ -14,8 +14,6 @@
 
 #include "main.h"
 
-static int get_line_len(char *buff, int i);
-static char *copy_line(char *buff, char *line, int i);
 static void copy_address(char *line, instr_arr *instructions, int instr_counter);
 static void copy_instr(char *line, instr_arr *instructions, int instr_counter);
 static void copy_dest_comp(char *line, instr_arr *instructions, int instr_counter, int len);
@@ -73,14 +71,14 @@ instr_arr *parse_instr(char *buff, t_lnode *head, int line_count)
 {
     instr_arr *instructions = malloc(sizeof(instr_arr));
     // declare arr of instr inside instr_arr
-    instructions->arr = malloc(sizeof(int) * line_count);
+    instructions->arr = malloc(sizeof(instr) * line_count);
     instructions->size = line_count;
     int instr_counter = 0; // to keep track of where instr is placed in the instr_arr
-    
+
     char *line = NULL;
     int line_len;
+    
     int i = 0;
-
     while (buff[i])
     {
         // skip comment lines
@@ -96,69 +94,41 @@ instr_arr *parse_instr(char *buff, t_lnode *head, int line_count)
             i++;
 
         // compute len of current line, copy to string
-        line_len = get_line_len(buff, i);
+        line_len = get_line_len(buff, i); // ft in helpers.c
         line = malloc(line_len + 1);        
-        line = copy_line(buff, line, i);
+        line = copy_line(buff, line, i); // ft in helpers.c
         
         debug("line: %s", line);
         // if line is proper instruction, info is stored in struct arr
         if (line != NULL && line[0] != '(')
         {
+            instructions->arr[instr_counter].address = NULL;
+            instructions->arr[instr_counter].dest = NULL;
+            instructions->arr[instr_counter].comp = NULL;
+            instructions->arr[instr_counter].jmp = NULL;
+
             if (line[0] == '@')
                 copy_address(line, instructions, instr_counter);
             else
                 copy_instr(line, instructions, instr_counter);
-            
             instr_counter++;
         }
         // reset line var
         free(line);
         line = NULL;
-        // set counter to beginning of buff's new line
+        // set i to beginning of buff's new line
         while (buff[i] != '\n')
             i++;
         i++;
     }
-    debug("THIS");
-    debug("dest: %s - comp: %s", instructions->arr[0].dest, instructions->arr[0].comp);
-
     return instructions;
-}
-
-static int get_line_len(char *buff, int i)
-{
-    int line_len = 0;
-
-    while (buff[i] != '\n')
-    {
-        line_len++;
-        i++;
-    }
-    return line_len;
-}
-
-static char *copy_line(char *buff, char *line, int i)
-{
-    int j = 0;
-
-    if (buff[i] == '\n')
-        return NULL;
-
-    while (buff[i] != '\n' && buff[i] != ' ')
-    {
-        line[j] = buff[i];
-        j++;
-        i++; 
-    }
-    line[j] = '\0';
-    return line;
 }
 
 static void copy_address(char *line, instr_arr *instructions, int instr_counter)
 {
+
     int i = 1;  // skips the @
     int len = 0;
-
     // malloc addr field in instruction, then copy from buff (line)
     while (line[i] != ' ' && line[i] != '\0')
     {
@@ -206,7 +176,6 @@ static void copy_instr(char *line, instr_arr *instructions, int instr_counter)
         }
         copy_comp_jmp(line, instructions, instr_counter, len);
     }
-    debug("dest: %s - comp: %s", instructions->arr[1].dest, instructions->arr[1].comp);
 }
 
 static void copy_dest_comp(char *line, instr_arr *instructions, int instr_counter, int len)
