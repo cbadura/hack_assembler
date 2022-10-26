@@ -15,7 +15,7 @@ int main(int ac, char **av)
 
     t_lnode *table = NULL; // symtable
     instr_arr *instructions = NULL;
-    char *binary = NULL;
+    char **bin_arr = NULL;
     char *hackfile = NULL;
 
     // initialize symbolic table
@@ -46,19 +46,18 @@ int main(int ac, char **av)
     int instr_counter = 0;
     while (instr_counter < instructions->size)
     {
-        if (instructions->arr[instr_counter].address)
+        if (instructions->arr[instr_counter].Ainstr)
             debug("addr: %s", instructions->arr[instr_counter].address);
 
-        if (instructions->arr[instr_counter].dest && instructions->arr[instr_counter].comp)
+        if (instructions->arr[instr_counter].Cinstr)
             debug("dest: %s - comp: %s", instructions->arr[instr_counter].dest, instructions->arr[instr_counter].comp);
         
-        if (instructions->arr[instr_counter].comp && instructions->arr[instr_counter].jmp)
+        if (instructions->arr[instr_counter].Linstr)
             debug("comp: %s - jmp: %s", instructions->arr[instr_counter].comp, instructions->arr[instr_counter].jmp);
         instr_counter++;
     }
-    
     // convert to binary
-    binary = generate_bin(instructions, table);
+    bin_arr = generate_bin(instructions, table);
 
     return 0;
 
@@ -69,6 +68,9 @@ int main(int ac, char **av)
     printf("hackfile: %s\n", hackfile);
     fd = open(hackfile, O_WRONLY | O_CREAT, 0644);
     // write from bin to file here
+
+    // write each line from bin_arr
+    // write newline after each
 
     close(fd);
 

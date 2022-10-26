@@ -102,10 +102,14 @@ instr_arr *parse_instr(char *buff, t_lnode *head, int line_count)
         // if line is proper instruction, info is stored in struct arr
         if (line != NULL && line[0] != '(')
         {
+            //initialize each instr in the arr
             instructions->arr[instr_counter].address = NULL;
             instructions->arr[instr_counter].dest = NULL;
             instructions->arr[instr_counter].comp = NULL;
             instructions->arr[instr_counter].jmp = NULL;
+            instructions->arr[instr_counter].Ainstr = false;
+            instructions->arr[instr_counter].Cinstr = false;
+            instructions->arr[instr_counter].Linstr = false;
 
             if (line[0] == '@')
                 copy_address(line, instructions, instr_counter);
@@ -126,7 +130,6 @@ instr_arr *parse_instr(char *buff, t_lnode *head, int line_count)
 
 static void copy_address(char *line, instr_arr *instructions, int instr_counter)
 {
-
     int i = 1;  // skips the @
     int len = 0;
     // malloc addr field in instruction, then copy from buff (line)
@@ -143,6 +146,7 @@ static void copy_address(char *line, instr_arr *instructions, int instr_counter)
         i++;
     }
     instructions->arr[instr_counter].address[i - 1] = '\0';
+    instructions->arr[instr_counter].Ainstr = true;
 }
 
 static void copy_instr(char *line, instr_arr *instructions, int instr_counter)
@@ -165,6 +169,7 @@ static void copy_instr(char *line, instr_arr *instructions, int instr_counter)
             i++;
         }
         copy_dest_comp(line, instructions, instr_counter, len);
+        instructions->arr[instr_counter].Cinstr = true;
     }
     else
     {
@@ -175,6 +180,7 @@ static void copy_instr(char *line, instr_arr *instructions, int instr_counter)
             i++;
         }
         copy_comp_jmp(line, instructions, instr_counter, len);
+        instructions->arr[instr_counter].Linstr = true;
     }
 }
 
