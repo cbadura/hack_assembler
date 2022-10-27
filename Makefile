@@ -1,4 +1,4 @@
-SRCS        = main.c parser.c code.c symtable.c helpers.c string_mgmt.c
+SRCS        = main.c parser.c code.c symtable.c bin_conversion.c helpers.c string_mgmt.c
 
 OBJS        = ${SRCS: .c=.o}
 

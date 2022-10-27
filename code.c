@@ -34,20 +34,21 @@ char **generate_bin(instr_arr *instructions, t_lnode *head)
         
         instr_counter++;
     }
+    bin_arr[bin_line_counter] = NULL;
     return bin_arr;
 }
 
 static void generate_Ainstr(instr_arr *instructions, int instr_counter, char **bin_arr, int *bin_line_counter)
 {
+    // set up bin address string
     bin_arr[*bin_line_counter] = malloc(17); // 16 bits + 0
-
+    my_memset(bin_arr[*bin_line_counter], '\0', 17);    
     bin_arr[*bin_line_counter][0] = '0';
     
-    // convert dec str to bin str
-
-    // str_cat
-
-    bin_arr[*bin_line_counter][16] = '\0';    
+    // convert dec str to bin str and concat both strings
+    char *bin_addr = bin_conversion(instructions->arr[instr_counter].address);
+    my_strcat(bin_arr[*bin_line_counter], bin_addr);
+    (*bin_line_counter)++;
 }
 
 static void generate_Cinstr(instr_arr *instructions, int instr_counter, char **bin_arr, int *bin_line_counter)

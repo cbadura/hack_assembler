@@ -6,7 +6,7 @@ int main(int ac, char **av)
 {
     if (ac != 2)
         return -1;
-    
+
     int fd;
     int file_size; // for mallocing the buffer and reading the file
     int read_bytes = 0; // for reading the file
@@ -59,8 +59,6 @@ int main(int ac, char **av)
     // convert to binary
     bin_arr = generate_bin(instructions, table);
 
-    return 0;
-
     // write binary file
     hackfile = my_strdup(av[1]);
     // append file extension to original file name
@@ -68,10 +66,15 @@ int main(int ac, char **av)
     printf("hackfile: %s\n", hackfile);
     fd = open(hackfile, O_WRONLY | O_CREAT, 0644);
     // write from bin to file here
-
-    // write each line from bin_arr
-    // write newline after each
-
+    int i = 0;
+    while (bin_arr[i])
+    {
+        // write each line from bin_arr
+        write(fd, bin_arr[i], my_strlen(bin_arr[i]));
+        // write newline after each
+        write(fd, "\n", 1);
+        i++;
+    }
     close(fd);
 
     free(hackfile);

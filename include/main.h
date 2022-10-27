@@ -34,5 +34,6 @@ char *get_label(char *line);
 int get_line_len(char *buff, int i);
 char *copy_line(char *buff, char *line, int i);
 char **generate_bin(instr_arr *instructions, t_lnode *head);
+char *bin_conversion(char *dec);
 
 #endif
