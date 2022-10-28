@@ -21,12 +21,22 @@ char **generate_bin(instr_arr *instructions, t_lnode *head)
     char **bin_arr = NULL;
     bin_arr = malloc(sizeof(char *) * instructions->size * 3); // in each line, there can be max 3 instructions
 
+    // create 3 lists for instr set
+    t_instr_set_node *comp_list = NULL;
+    t_instr_set_node *dest_list = NULL;
+    t_instr_set_node *jmp_list = NULL;
+    comp_list = set_up_instr_comp();
+    dest_list = set_up_instr_dest();
+    jmp_list = set_up_instr_jmp();
+    return NULL;
+
     int bin_line_counter = 0;
     int instr_counter = 0;
     while (instr_counter < instructions->size)
     {
         if (instructions->arr[instr_counter].Ainstr)
             generate_Ainstr(instructions, instr_counter, bin_arr, &bin_line_counter);
+        // ALSO pass TWO lists to generator
         else if (instructions->arr[instr_counter].Cinstr)
             generate_Cinstr(instructions, instr_counter, bin_arr, &bin_line_counter);
         else if (instructions->arr[instr_counter].Linstr)
@@ -64,20 +74,19 @@ static void generate_Cinstr(instr_arr *instructions, int instr_counter, char **b
     bin_arr[*bin_line_counter][1] = '1';
     bin_arr[*bin_line_counter][2] = '1';
 
-    char *comp = malloc(8); // 7 bits + '/0'
-    comp[7] = '\0';
+    char *comp = NULL;
     // find correct instruction from Hack instruction set and append binary for it
-    if (my_strcmp(instructions->arr[instr_counter].comp, "A") == 0)
-        my_strcpy(comp, COMP_A);
-    
+    /* if (my_strcmp(instructions->arr[instr_counter].comp, "A") == 0)
+        comp = my_strdup(COMP_A); */
+    debug("comp: %s", comp);
     my_strcat(bin_arr[*bin_line_counter], comp);
     
-    char *dest = malloc(4); // 3 bits + '/0'
-    dest[3] = '\0';
+    char *dest = NULL;
     // find correct instruction from Hack instruction set and append binary for it
-    if (my_strcmp(instructions->arr[instr_counter].dest, "D") == 0)
-        my_strcpy(dest, DEST_D);
-    
+    // FROM LIST: ITERATE IT AND COMPARE, THEN dest will be the bin value from the list
+    /* if (my_strcmp(instructions->arr[instr_counter].dest, "D") == 0)
+        dest = my_strdup(DEST_D); */
+    debug("dest: %s", dest);
     my_strcat(bin_arr[*bin_line_counter], dest);
 
     // jmp field at the end is empty in C-instructions
@@ -85,6 +94,7 @@ static void generate_Cinstr(instr_arr *instructions, int instr_counter, char **b
     bin_arr[*bin_line_counter][14] = '0';
     bin_arr[*bin_line_counter][15] = '0';
 
+    debug("bin_arr: %s", bin_arr[*bin_line_counter]);
     (*bin_line_counter)++;
     free(comp);
     free(dest);
@@ -106,7 +116,6 @@ static void generate_Linstr(instr_arr *instructions, int instr_counter, char **b
     bin_arr[*bin_line_counter][12] = '0';
 
 }
-
 
 // check if table contains label
 // if (!contains_label(head, label))

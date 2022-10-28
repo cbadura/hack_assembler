@@ -58,6 +58,7 @@ int main(int ac, char **av)
     }
     // convert to binary
     bin_arr = generate_bin(instructions, table);
+    return 0;
 
     // write binary file
     hackfile = my_strdup(av[1]);

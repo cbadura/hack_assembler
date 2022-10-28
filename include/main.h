@@ -37,4 +37,9 @@ char *copy_line(char *buff, char *line, int i);
 char **generate_bin(instr_arr *instructions, t_lnode *head);
 char *bin_conversion(char *dec);
 
+t_instr_set_node *set_up_instr_comp();
+t_instr_set_node *set_up_instr_dest();
+t_instr_set_node *set_up_instr_jmp();
+void print_list_instr(t_instr_set_node *head);
+
 #endif
