@@ -43,22 +43,68 @@ static void generate_Ainstr(instr_arr *instructions, int instr_counter, char **b
     // set up bin address string
     bin_arr[*bin_line_counter] = malloc(17); // 16 bits + 0
     my_memset(bin_arr[*bin_line_counter], '\0', 17);    
+    // first bit of address string is 0 by convention
     bin_arr[*bin_line_counter][0] = '0';
     
     // convert dec str to bin str and concat both strings
     char *bin_addr = bin_conversion(instructions->arr[instr_counter].address);
     my_strcat(bin_arr[*bin_line_counter], bin_addr);
+
     (*bin_line_counter)++;
+    free(bin_addr);
 }
 
 static void generate_Cinstr(instr_arr *instructions, int instr_counter, char **bin_arr, int *bin_line_counter)
 {
+    // set up bin comp string
+    bin_arr[*bin_line_counter] = malloc(17); // 16 bits + '\0'
+    my_memset(bin_arr[*bin_line_counter], '\0', 17);
+    // first bit of address string is 1 by convention
+    bin_arr[*bin_line_counter][0] = '1';
+    bin_arr[*bin_line_counter][1] = '1';
+    bin_arr[*bin_line_counter][2] = '1';
+
+    char *comp = malloc(8); // 7 bits + '/0'
+    comp[7] = '\0';
+    // find correct instruction from Hack instruction set and append binary for it
+    if (my_strcmp(instructions->arr[instr_counter].comp, "A") == 0)
+        my_strcpy(comp, COMP_A);
     
+    my_strcat(bin_arr[*bin_line_counter], comp);
+    
+    char *dest = malloc(4); // 3 bits + '/0'
+    dest[3] = '\0';
+    // find correct instruction from Hack instruction set and append binary for it
+    if (my_strcmp(instructions->arr[instr_counter].dest, "D") == 0)
+        my_strcpy(dest, DEST_D);
+    
+    my_strcat(bin_arr[*bin_line_counter], dest);
+
+    // jmp field at the end is empty in C-instructions
+    bin_arr[*bin_line_counter][13] = '0';
+    bin_arr[*bin_line_counter][14] = '0';
+    bin_arr[*bin_line_counter][15] = '0';
+
+    (*bin_line_counter)++;
+    free(comp);
+    free(dest);
 }
 
 static void generate_Linstr(instr_arr *instructions, int instr_counter, char **bin_arr, int *bin_line_counter)
 {
-    
+     // set up bin comp string
+    bin_arr[*bin_line_counter] = malloc(17); // 16 bits + 0
+    my_memset(bin_arr[*bin_line_counter], '\0', 17);
+    // first bit of address string is 1 by convention
+    bin_arr[*bin_line_counter][0] = '1';
+    bin_arr[*bin_line_counter][1] = '1';
+    bin_arr[*bin_line_counter][2] = '1';
+
+    // dest field at the end is empty in C-instructions
+    bin_arr[*bin_line_counter][10] = '0';
+    bin_arr[*bin_line_counter][11] = '0';
+    bin_arr[*bin_line_counter][12] = '0';
+
 }
 
 

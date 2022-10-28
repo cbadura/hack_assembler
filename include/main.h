@@ -7,10 +7,11 @@
 #include <sys/types.h>  // for chmod
 #include <sys/stat.h>   // for chmod
 #include "symtable.h"
+#include "bin_conversion.h"
 #include "string_mgmt.h"
 #include "dbg.h"
 
-#define MAX_SIZE 1024
+// #define MAX_SIZE 1024
 
 typedef struct instr {
     bool Ainstr;
