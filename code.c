@@ -13,8 +13,8 @@
 // if curr->label == false, it's a var (either predefined or user var)
 
 static void generate_Ainstr(instr_arr *instructions, int instr_counter, char **bin_arr, int *bin_line_counter);
-static void generate_Cinstr(instr_arr *instructions, int instr_counter, char **bin_arr, int *bin_line_counter);
-static void generate_Linstr(instr_arr *instructions, int instr_counter, char **bin_arr, int *bin_line_counter);
+static void generate_Cinstr(instr_arr *instructions, int instr_counter, char **bin_arr, int *bin_line_counter, t_instr_set_node *comp_list, t_instr_set_node *dest_list);
+static void generate_Linstr(instr_arr *instructions, int instr_counter, char **bin_arr, int *bin_line_counter, t_instr_set_node *comp_list, t_instr_set_node *jmp_list);
 
 char **generate_bin(instr_arr *instructions, t_lnode *head)
 {
@@ -28,7 +28,6 @@ char **generate_bin(instr_arr *instructions, t_lnode *head)
     comp_list = set_up_instr_comp();
     dest_list = set_up_instr_dest();
     jmp_list = set_up_instr_jmp();
-    return NULL;
 
     int bin_line_counter = 0;
     int instr_counter = 0;
@@ -36,11 +35,10 @@ char **generate_bin(instr_arr *instructions, t_lnode *head)
     {
         if (instructions->arr[instr_counter].Ainstr)
             generate_Ainstr(instructions, instr_counter, bin_arr, &bin_line_counter);
-        // ALSO pass TWO lists to generator
         else if (instructions->arr[instr_counter].Cinstr)
-            generate_Cinstr(instructions, instr_counter, bin_arr, &bin_line_counter);
+            generate_Cinstr(instructions, instr_counter, bin_arr, &bin_line_counter, comp_list, dest_list);
         else if (instructions->arr[instr_counter].Linstr)
-            generate_Linstr(instructions, instr_counter, bin_arr, &bin_line_counter);
+            generate_Linstr(instructions, instr_counter, bin_arr, &bin_line_counter, comp_list, jmp_list);
         
         instr_counter++;
     }
@@ -64,7 +62,7 @@ static void generate_Ainstr(instr_arr *instructions, int instr_counter, char **b
     free(bin_addr);
 }
 
-static void generate_Cinstr(instr_arr *instructions, int instr_counter, char **bin_arr, int *bin_line_counter)
+static void generate_Cinstr(instr_arr *instructions, int instr_counter, char **bin_arr, int *bin_line_counter, t_instr_set_node *comp_list, t_instr_set_node *dest_list)
 {
     // set up bin comp string
     bin_arr[*bin_line_counter] = malloc(17); // 16 bits + '\0'
@@ -76,16 +74,26 @@ static void generate_Cinstr(instr_arr *instructions, int instr_counter, char **b
 
     char *comp = NULL;
     // find correct instruction from Hack instruction set and append binary for it
-    /* if (my_strcmp(instructions->arr[instr_counter].comp, "A") == 0)
-        comp = my_strdup(COMP_A); */
+    while (comp_list)
+    {
+        if (my_strcmp(instructions->arr[instr_counter].comp, comp_list->assembly_instr) == 0)
+             comp = my_strdup(comp_list->bin_value);
+
+        comp_list = comp_list->next;
+    }
     debug("comp: %s", comp);
     my_strcat(bin_arr[*bin_line_counter], comp);
     
     char *dest = NULL;
     // find correct instruction from Hack instruction set and append binary for it
-    // FROM LIST: ITERATE IT AND COMPARE, THEN dest will be the bin value from the list
-    /* if (my_strcmp(instructions->arr[instr_counter].dest, "D") == 0)
-        dest = my_strdup(DEST_D); */
+    while (dest_list)
+    {
+        if (my_strcmp(instructions->arr[instr_counter].dest, dest_list->assembly_instr) == 0)
+             dest = my_strdup(dest_list->bin_value);
+
+        dest_list = dest_list->next;
+    }
+    debug("assembly_dest: %s", instructions->arr[instr_counter].dest);
     debug("dest: %s", dest);
     my_strcat(bin_arr[*bin_line_counter], dest);
 
@@ -100,7 +108,7 @@ static void generate_Cinstr(instr_arr *instructions, int instr_counter, char **b
     free(dest);
 }
 
-static void generate_Linstr(instr_arr *instructions, int instr_counter, char **bin_arr, int *bin_line_counter)
+static void generate_Linstr(instr_arr *instructions, int instr_counter, char **bin_arr, int *bin_line_counter, t_instr_set_node *comp_list, t_instr_set_node *jmp_list)
 {
      // set up bin comp string
     bin_arr[*bin_line_counter] = malloc(17); // 16 bits + 0
@@ -110,11 +118,37 @@ static void generate_Linstr(instr_arr *instructions, int instr_counter, char **b
     bin_arr[*bin_line_counter][1] = '1';
     bin_arr[*bin_line_counter][2] = '1';
 
-    // dest field at the end is empty in C-instructions
+    char *comp = NULL;
+    // find correct instruction from Hack instruction set and append binary for it
+    while (comp_list)
+    {
+        if (my_strcmp(instructions->arr[instr_counter].comp, comp_list->assembly_instr) == 0)
+             comp = my_strdup(comp_list->bin_value);
+
+        comp_list = comp_list->next;
+    }
+    debug("comp: %s", comp);
+    my_strcat(bin_arr[*bin_line_counter], comp);
+    // dest field in between is empty in C-instructions
     bin_arr[*bin_line_counter][10] = '0';
     bin_arr[*bin_line_counter][11] = '0';
     bin_arr[*bin_line_counter][12] = '0';
 
+    char *jmp = NULL;
+    // find correct instruction from Hack instruction set and append binary for it
+    while (jmp_list)
+    {
+        if (my_strcmp(instructions->arr[instr_counter].jmp, jmp_list->assembly_instr) == 0)
+             jmp = my_strdup(jmp_list->bin_value);
+
+        jmp_list = jmp_list->next;
+    }
+    debug("jmp: %s", jmp);
+    my_strcat(bin_arr[*bin_line_counter], jmp);
+    debug("bin_arr: %s", bin_arr[*bin_line_counter]);
+    (*bin_line_counter)++;
+    free(comp);
+    free(jmp);
 }
 
 // check if table contains label

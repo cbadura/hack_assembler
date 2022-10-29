@@ -58,13 +58,11 @@ int main(int ac, char **av)
     }
     // convert to binary
     bin_arr = generate_bin(instructions, table);
-    return 0;
 
     // write binary file
     hackfile = my_strdup(av[1]);
     // append file extension to original file name
     my_strcat_dot(hackfile, ".hack");
-    printf("hackfile: %s\n", hackfile);
     fd = open(hackfile, O_WRONLY | O_CREAT, 0644);
     // write from bin to file here
     int i = 0;
