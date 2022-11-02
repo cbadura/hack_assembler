@@ -22,7 +22,7 @@ Translating A-instructions (where value is either non-negative decimal constant 
 op code of A-instr. is 0, so an instruction such as "@value" (=value in dec) in binary reads: "0valueinbinary"
 --> decimal to 15-bit binary conversion is done in bin_conversion.c.
 
-Translating C-instructions is done according to a table of possible instructions: 
+Translating C-instructions is done according to a table of possible instructions (Nisan/Schocken 2021, p. 153): 
 <img width="923" alt="Hack instruction set" src="https://user-images.githubusercontent.com/93912698/199454924-5314d2c2-b7c9-43d4-8a34-22054a8f0222.png">
 
 The data structure for this is set up in bin_conversion.h.
