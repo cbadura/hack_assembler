@@ -9,14 +9,14 @@ int main(int ac, char **av)
 
     int fd;
     int file_size; // for mallocing the buffer and reading the file
-    int read_bytes = 0; // for reading the file
-    char *buff = NULL; // contains content of whole file
-    int line_count = 0; // stores lines of the file without comments and empty lines
+    int read_bytes          = 0; // for reading the file
+    char *buff              = NULL; // contains content of whole file
+    int line_count          = 0; // stores lines of the file without comments and empty lines
 
-    t_lnode *table = NULL; // symtable
-    instr_arr *instructions = NULL;
-    char **bin_arr = NULL;
-    char *hackfile = NULL;
+    t_lnode *table          = NULL; // symtable
+    instr_arr *instructions = NULL; // individ instructions
+    char **bin_arr          = NULL; // all binary strings for output
+    char *hackfile          = NULL; // holds output file name
 
     // initialize symbolic table
     table = init_symtable(table);
@@ -38,12 +38,12 @@ int main(int ac, char **av)
 
     // parse(1): first look for labels, pass to table
     table = list_labels(buff, table, &line_count);
-    // print_list(table);
+    print_list(table);
 
     // then parse(2): transfer all instructions to struct, vars to symbolic table
     instructions = parse_instr(buff, table, line_count);
     
-    int instr_counter = 0;
+    /* int instr_counter = 0;
     while (instr_counter < instructions->size)
     {
         if (instructions->arr[instr_counter].Ainstr)
@@ -55,7 +55,7 @@ int main(int ac, char **av)
         if (instructions->arr[instr_counter].Linstr)
             debug("comp: %s - jmp: %s", instructions->arr[instr_counter].comp, instructions->arr[instr_counter].jmp);
         instr_counter++;
-    }
+    } */
     // convert to binary
     bin_arr = generate_bin(instructions, table);
 

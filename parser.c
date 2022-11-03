@@ -1,16 +1,4 @@
-// unpacks each instruction in assembly language into its underlying fields
-
-// big loop: read indiv lines
-// handle white space and comments
-
-// counter is needed for instruction lines (must be part of struct entry or similar)
-
-// 2) read input file
-// look for lines that start with opening bracket; while doing this count the lines containing instructions
-// first pass: add the label symbols to value table
-// second pass: set n to 16,
-// extract var symbols (all the symbols that don't appear in symbol table at this point are vars);
-// but if value is found, use it to complete instruction
+// 1) stores symbolic labels, 2) unpacks each instruction in assembly language into its underlying fields
 
 #include "main.h"
 
@@ -18,6 +6,7 @@ static void copy_address(char *line, instr_arr *instructions, int instr_counter)
 static void copy_instr(char *line, instr_arr *instructions, int instr_counter);
 static void copy_dest_comp(char *line, instr_arr *instructions, int instr_counter, int len);
 static void copy_comp_jmp(char *line, instr_arr *instructions, int instr_counter, int len);
+static t_lnode *copy_var(t_lnode *head);
 
 t_lnode *list_labels(char *buff, t_lnode *head, int *line_count)
 {
@@ -98,7 +87,7 @@ instr_arr *parse_instr(char *buff, t_lnode *head, int line_count)
         line = malloc(line_len + 1);        
         line = copy_line(buff, line, i); // ft in helpers.c
         
-        debug("line: %s", line);
+        // debug("line: %s", line);
         // if line is proper instruction, info is stored in struct arr
         if (line != NULL && line[0] != '(')
         {
@@ -112,12 +101,17 @@ instr_arr *parse_instr(char *buff, t_lnode *head, int line_count)
             instructions->arr[instr_counter].Linstr = false;
 
             if (line[0] == '@')
-                copy_address(line, instructions, instr_counter);
+            {
+                if (line[1] > '9')  // variables need to start with non-digits
+                    head = copy_var(head);
+                else    
+                    copy_address(line, instructions, instr_counter);
+            }
             else
                 copy_instr(line, instructions, instr_counter);
             instr_counter++;
         }
-        // reset line var
+        // reset line str
         free(line);
         line = NULL;
         // set i to beginning of buff's new line
@@ -129,7 +123,7 @@ instr_arr *parse_instr(char *buff, t_lnode *head, int line_count)
 }
 
 static void copy_address(char *line, instr_arr *instructions, int instr_counter)
-{
+{    
     int i = 1;  // skips the @
     int len = 0;
     // malloc addr field in instruction, then copy from buff (line)
@@ -139,6 +133,7 @@ static void copy_address(char *line, instr_arr *instructions, int instr_counter)
         i++;
     }
     i = 1;
+
     instructions->arr[instr_counter].address = malloc(len + 1);
     while (line[i])
     {
@@ -232,4 +227,10 @@ static void copy_comp_jmp(char *line, instr_arr *instructions, int instr_counter
         j++;
     }
     instructions->arr[instr_counter].jmp[j] = '\0';
+}
+
+static t_lnode *copy_var(t_lnode *head)
+{
+
+    return head;
 }

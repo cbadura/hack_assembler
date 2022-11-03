@@ -11,8 +11,6 @@
 #include "string_mgmt.h"
 #include "dbg.h"
 
-// #define MAX_SIZE 1024
-
 typedef struct instr {
     bool Ainstr;
     bool Cinstr;

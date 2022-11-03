@@ -102,7 +102,7 @@ t_lnode *create_node_label(t_lnode *head, char *symbol, int line)
     new->label = false;
     new->var = true;
     new->symbol = my_strdup(var);
-    new->value = 0;
+    new->value = VAR_COUNT;
     new->next = NULL;
 
     if (!head)

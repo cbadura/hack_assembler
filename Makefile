@@ -2,8 +2,8 @@ SRCS        = main.c parser.c code.c symtable.c bin_conversion.c helpers.c strin
 
 OBJS        = ${SRCS: .c=.o}
 
-# HEADER = include/main.h\
-# 	include/string_mgmt.h\
+HEADER = include/main.h\
+ 	include/string_mgmt.h\
 
 CFLAGS      += -Iinclude # -Wall -Wextra -Werror
 CC = gcc
