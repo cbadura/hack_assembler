@@ -56,7 +56,7 @@ static void generate_Ainstr(instr_arr *instructions, t_lnode *head, int *instr_c
     bin_arr[*bin_line_counter][0] = '0';
     
     // if address is symbolic (e.g. LOOP, or a variable such as x), resolve and convert:
-    while (head)
+    /* while (head)
     {
         // either retrieve line number of next instruction, set instr_counter to it, return
         if (my_strcmp(instructions->arr[*instr_counter].address, head->symbol) == 0 && head->line)
@@ -71,12 +71,12 @@ static void generate_Ainstr(instr_arr *instructions, t_lnode *head, int *instr_c
             break;
         }
         head = head->next;
-    }
+    } */
     
     
     // else convert dec str to bin str and concat both strings
-    else
-        bin_addr = bin_conversion(instructions->arr[instr_counter].address);
+    // else
+        bin_addr = bin_conversion(instructions->arr[*instr_counter].address);
 
     my_strcat(bin_arr[*bin_line_counter], bin_addr);
 

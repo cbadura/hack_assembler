@@ -11,6 +11,8 @@
 #include "string_mgmt.h"
 #include "dbg.h"
 
+int VAR_COUNT;
+
 typedef struct instr {
     bool Ainstr;
     bool Cinstr;
@@ -27,11 +29,15 @@ typedef struct instr_arr {
 } instr_arr;
 
 int get_filesize(char *file);
+
 t_lnode *list_labels(char *buff, t_lnode *head, int *line_count);
 instr_arr *parse_instr(char *buff, t_lnode *head, int line_count);
 char *get_label(char *line);
+bool new_var(char *line, t_lnode *head);
+char *get_var(char *line);
 int get_line_len(char *buff, int i);
 char *copy_line(char *buff, char *line, int i);
+
 char **generate_bin(instr_arr *instructions, t_lnode *head);
 char *bin_conversion(char *dec);
 
@@ -39,5 +45,6 @@ t_instr_set_node *set_up_instr_comp();
 t_instr_set_node *set_up_instr_dest();
 t_instr_set_node *set_up_instr_jmp();
 void print_list_instr(t_instr_set_node *head);
+
 
 #endif

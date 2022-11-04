@@ -31,11 +31,12 @@
 #define THAT    4
 
 typedef struct s_lnode {
-    bool label;
-    bool var;
     char *symbol;
     int value;
     int line;
+    char *var_addr;
+    bool label;
+    bool var;
     struct s_lnode *next;
 } t_lnode;
 

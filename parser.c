@@ -6,7 +6,7 @@ static void copy_address(char *line, instr_arr *instructions, int instr_counter)
 static void copy_instr(char *line, instr_arr *instructions, int instr_counter);
 static void copy_dest_comp(char *line, instr_arr *instructions, int instr_counter, int len);
 static void copy_comp_jmp(char *line, instr_arr *instructions, int instr_counter, int len);
-static t_lnode *copy_var(t_lnode *head);
+static t_lnode *copy_var(t_lnode *head, char *line);
 
 t_lnode *list_labels(char *buff, t_lnode *head, int *line_count)
 {
@@ -87,7 +87,7 @@ instr_arr *parse_instr(char *buff, t_lnode *head, int line_count)
         line = malloc(line_len + 1);        
         line = copy_line(buff, line, i); // ft in helpers.c
         
-        // debug("line: %s", line);
+        debug("line: %s", line);
         // if line is proper instruction, info is stored in struct arr
         if (line != NULL && line[0] != '(')
         {
@@ -102,8 +102,8 @@ instr_arr *parse_instr(char *buff, t_lnode *head, int line_count)
 
             if (line[0] == '@')
             {
-                if (line[1] > '9')  // variables need to start with non-digits
-                    head = copy_var(head);
+                if ((line[1] >= 'a' && line[1] <= 'z') && new_var(line, head))  // variables need to start with non-capital letters
+                    head = copy_var(head, line);
                 else    
                     copy_address(line, instructions, instr_counter);
             }
@@ -229,8 +229,13 @@ static void copy_comp_jmp(char *line, instr_arr *instructions, int instr_counter
     instructions->arr[instr_counter].jmp[j] = '\0';
 }
 
-static t_lnode *copy_var(t_lnode *head)
+static t_lnode *copy_var(t_lnode *head, char *line)
 {
+    char *var = get_var(line);
+    debug("var: %s", var);
+    
+    head = create_node_var(head, var);
 
+    VAR_COUNT++;
     return head;
 }
