@@ -102,10 +102,10 @@ instr_arr *parse_instr(char *buff, t_lnode *head, int line_count)
 
             if (line[0] == '@')
             {
-                if ((line[1] >= 'a' && line[1] <= 'z') && new_var(line, head))  // variables need to start with non-capital letters
+                if (my_islower(line[1]) && new_var(line, head))  // variables need to start with non-capital letters
                     head = copy_var(head, line);
-                else    
-                    copy_address(line, instructions, instr_counter);
+                
+                copy_address(line, instructions, instr_counter);
             }
             else
                 copy_instr(line, instructions, instr_counter);
@@ -231,9 +231,7 @@ static void copy_comp_jmp(char *line, instr_arr *instructions, int instr_counter
 
 static t_lnode *copy_var(t_lnode *head, char *line)
 {
-    char *var = get_var(line);
-    debug("var: %s", var);
-    
+    char *var = get_var(line);    
     head = create_node_var(head, var);
 
     VAR_COUNT++;

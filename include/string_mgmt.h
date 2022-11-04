@@ -16,5 +16,8 @@ void my_putstr(char *string);
 void my_memset(char *str, char c, int n);
 char *my_strchr(char *str, char c);
 char *my_itoa(int nb);
+int my_isalpha(char letter);
+int my_isupper(char letter);
+int my_islower(char letter);
 
 #endif

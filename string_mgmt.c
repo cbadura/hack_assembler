@@ -179,3 +179,23 @@ static char *reverse_string(char *word)
     }
     return word;
 }
+
+int my_islower(char letter) {
+    if (letter >= 'a' && letter <= 'z')
+            return 1;
+    return 0;
+}
+
+int my_isupper(char letter) {
+    if (letter >= 'A' && letter <= 'Z')
+            return 1;
+    return 0;
+}
+
+int my_isalpha(char letter)
+{
+    if (my_isupper(letter) || my_islower(letter))
+        return 1;
+    else
+        return 0;
+}

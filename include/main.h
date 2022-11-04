@@ -46,5 +46,4 @@ t_instr_set_node *set_up_instr_dest();
 t_instr_set_node *set_up_instr_jmp();
 void print_list_instr(t_instr_set_node *head);
 
-
 #endif
