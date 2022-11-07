@@ -2,17 +2,7 @@
 
 #include "main.h"
 
-// if string[0] == 0, A-instruction with 15-bit address
-// symbolic:    @xxx
-// binary:      (0xxx...xxx) - can hold 32767 values in decimal
-
-// else C-instruction, translate:
-// symbolic:    dest=comp;jmp
-// binary:      111acccccdddjjj
-
-// if curr->label == false, it's a var (either predefined or user var)
-
-static bool generate_Ainstr(instr_arr *instructions, t_lnode *head, int *instr_counter, char **bin_arr, int *bin_line_counter);
+static void generate_Ainstr(instr_arr *instructions, t_lnode *head, int *instr_counter, char **bin_arr, int *bin_line_counter);
 static void generate_Cinstr(instr_arr *instructions, int instr_counter, char **bin_arr, int *bin_line_counter, t_instr_set_node *comp_list, t_instr_set_node *dest_list);
 static void generate_Linstr(instr_arr *instructions, int instr_counter, char **bin_arr, int *bin_line_counter, t_instr_set_node *comp_list, t_instr_set_node *jmp_list);
 
@@ -31,17 +21,10 @@ char **generate_bin(instr_arr *instructions, t_lnode *head)
 
     int bin_line_counter = 0;
     int instr_counter = 0;
-    bool loop;
     while (instr_counter < instructions->size)
     {
-        debug("counter: %d", instr_counter);
-        loop = false;
         if (instructions->arr[instr_counter].Ainstr)
-        {
-            loop = generate_Ainstr(instructions, head, &instr_counter, bin_arr, &bin_line_counter);
-            if (loop == true)
-                continue;
-        }
+            generate_Ainstr(instructions, head, &instr_counter, bin_arr, &bin_line_counter);
         else if (instructions->arr[instr_counter].Cinstr)
             generate_Cinstr(instructions, instr_counter, bin_arr, &bin_line_counter, comp_list, dest_list);
         else if (instructions->arr[instr_counter].Linstr)
@@ -53,7 +36,7 @@ char **generate_bin(instr_arr *instructions, t_lnode *head)
     return bin_arr;
 }
 
-static bool generate_Ainstr(instr_arr *instructions, t_lnode *head, int *instr_counter, char **bin_arr, int *bin_line_counter)
+static void generate_Ainstr(instr_arr *instructions, t_lnode *head, int *instr_counter, char **bin_arr, int *bin_line_counter)
 {
     char *bin_addr = NULL;
     // set up bin address string
@@ -62,20 +45,18 @@ static bool generate_Ainstr(instr_arr *instructions, t_lnode *head, int *instr_c
     // first bit of address string is 0 by convention
     bin_arr[*bin_line_counter][0] = '0';
     
-    debug("address: %s", instructions->arr[*instr_counter].address);
     // if address is symbolic (e.g. LOOP, or a variable such as x), resolve and convert:
 
     if (my_isalpha(instructions->arr[*instr_counter].address[0]))
     {
         while (head)
         {
-            // either retrieve line number of next instruction, set instr_counter to it, return
-            // debug("symbol: %s", head->symbol);
+            // either retrieve line number of next instruction
             if ((my_strcmp(instructions->arr[*instr_counter].address, head->symbol) == 0) && head->line)
             {
                 debug("head->line: %d", head->line);
-                *instr_counter = head->line;
-                return true;
+                bin_addr = bin_conversion(my_itoa(head->line));
+                break;
             }
             // or resolve val of variable to number and store in bin_addr
             if ((my_strcmp(instructions->arr[*instr_counter].address, head->symbol) == 0) && head->var)
@@ -94,7 +75,6 @@ static bool generate_Ainstr(instr_arr *instructions, t_lnode *head, int *instr_c
 
     (*bin_line_counter)++;
     free(bin_addr);
-    return false;
 }
 
 static void generate_Cinstr(instr_arr *instructions, int instr_counter, char **bin_arr, int *bin_line_counter, t_instr_set_node *comp_list, t_instr_set_node *dest_list)
@@ -128,8 +108,6 @@ static void generate_Cinstr(instr_arr *instructions, int instr_counter, char **b
 
         dest_list = dest_list->next;
     }
-    // debug("assembly_dest: %s", instructions->arr[instr_counter].dest);
-    // debug("dest: %s", dest);
     my_strcat(bin_arr[*bin_line_counter], dest);
 
     // jmp field at the end is empty in C-instructions
@@ -137,7 +115,6 @@ static void generate_Cinstr(instr_arr *instructions, int instr_counter, char **b
     bin_arr[*bin_line_counter][14] = '0';
     bin_arr[*bin_line_counter][15] = '0';
 
-    // debug("bin_arr: %s", bin_arr[*bin_line_counter]);
     (*bin_line_counter)++;
     free(comp);
     free(dest);
@@ -162,7 +139,6 @@ static void generate_Linstr(instr_arr *instructions, int instr_counter, char **b
 
         comp_list = comp_list->next;
     }
-    // debug("comp: %s", comp);
     my_strcat(bin_arr[*bin_line_counter], comp);
     // dest field in between is empty in C-instructions
     bin_arr[*bin_line_counter][10] = '0';
@@ -178,13 +154,10 @@ static void generate_Linstr(instr_arr *instructions, int instr_counter, char **b
 
         jmp_list = jmp_list->next;
     }
-    // debug("jmp: %s", jmp);
     my_strcat(bin_arr[*bin_line_counter], jmp);
-    // debug("bin_arr: %s", bin_arr[*bin_line_counter]);
+
     (*bin_line_counter)++;
     free(comp);
     free(jmp);
 }
 
-// check if table contains label
-// if (!contains_label(head, label))
